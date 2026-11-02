@@ -1,0 +1,266 @@
+FENCING ACADEMY
+Digital Learning Platform
+Project Overview & Initial Functional Requirements
+Version 0.2  |  2 November 2026
+Prepared as a discussion draft for project discovery
+
+ 1. Project Overview
+The Fencing Academy platform is a web-based learning environment intended to provide structured educational content for fencing-related subjects. Users will be able to access courses, study official rules and supporting documents, watch instructional videos, complete assessments, and progress through defined learning levels.
+The platform will also include account management and role-based permissions. Academy administrators will manage learning content, while designated FIE users will have access to the learning platform and an additional area for reviewing administrative activity.
+This document captures the currently known scope. Items that still require a decision are marked as questions or assumptions and should be confirmed before implementation.
+2. High-Level Information Architecture
+The home page is expected to present five main subject areas/courses. The exact names and content of all five areas have not yet been provided.
+•	Selecting a subject area opens its dedicated landing page.
+•	Refereeing is the first subject area described in detail in this draft.
+•	The other four subject areas should follow a consistent structure where appropriate, subject to confirmation.
+2.1 Refereeing landing page
+The Refereeing area is expected to provide access to the following sections:
+Section	Purpose / expected content
+Courses	Structured learning path containing four levels. Each level includes two course modules and a knowledge test.
+FIE Rules	Official rule documents, primarily PDF files, which users can open in the browser or download.
+Rules & Interpretation	Rule-related reference content. Selected rules may link to dedicated pages containing explanatory videos.
+Rules	A categorized rules area containing Technical Rules, Administrative Rules, and Organization Rules.
+Video Library	A video collection organized by weapon: Epee, Foil, and Sabre.
+
+Navigation terminology needs confirmation: the initial concept mentions 'Rule Videos' as a top-level option, while the later description separates 'Rules & Interpretation' and 'Video Library'. The final menu structure should make these distinctions clear and avoid duplicate destinations.
+3. Refereeing – Courses and Learning Path
+The Courses section contains four sequential learning levels. Users should progress through the levels in order. Each level contains two course modules and a test consisting of ten questions. A user who achieves the required passing result can unlock the next level.
+Level	Course module 1	Course module 2	Assessment
+Beginner	Referee Duties & AI	Referee Gestures	10-question test
+Intermediate	Referee Duties	Referee Gestures	10-question test
+Advanced	Referee Duties	Referee Gestures	10-question test
+High-Level Performance	Referee Duties, Psychology & AI	Referee Gestures	10-question test
+
+3.1 Expected learner journey
+1.	The user opens Refereeing and selects Courses.
+2.	The user sees the four levels and their availability/status.
+3.	The user opens the Beginner level and accesses its two course modules.
+4.	After studying the required material, the user takes the level test containing ten questions.
+5.	If the user meets the defined pass criteria, the next level becomes available.
+6.	The same process repeats for Intermediate, Advanced, and High-Level Performance.
+7.	The platform records progress, test attempts, scores, and completion status.
+3.2 Assessment behaviour to define
+•	Passing score: the minimum score or percentage required to pass.
+•	Attempts: whether users can retry a failed test, and whether there is a limit or waiting period.
+•	Question selection: fixed questions or randomly selected questions from a question bank.
+•	Question types: single choice, multiple choice, true/false, image/video-based questions, or other formats.
+•	Feedback: whether users see correct answers and explanations after submission.
+•	Progression: whether both course modules must be completed before the test is available.
+•	Retakes: whether a passed test can be retaken and whether the best or latest score is retained.
+4. Rules, Documents and Video Content
+4.1 FIE Rules
+•	Display a collection of official rule documents.
+•	Allow users to open PDFs in an in-browser viewer.
+•	Allow users to download PDF files.
+•	Documents should be categorized and searchable or filterable if the volume of content requires it.
+•	Administrators should be able to upload, replace, update, and remove documents, subject to permissions.
+4.2 Rules & Interpretation
+•	Provide a browsable collection of rules and their interpretations.
+•	Where an interpretation has an explanatory video, the relevant rule entry should link to a dedicated video/detail page.
+•	The relationship between a rule, its interpretation, and its video should be managed as structured content rather than as an unconnected list of links.
+4.3 Rules categories
+Category	Description
+Technical Rules	Technical and sporting rules governing fencing and officiating.
+Administrative Rules	Administrative requirements, procedures, and related documentation.
+Organization Rules	Rules and information concerning organization and operational structure.
+
+4.4 Video Library
+The Video Library will contain a large collection of videos grouped into three weapon categories:
+•	Epee
+•	Foil
+•	Sabre
+Each category should have a dedicated page. The exact video player, hosting provider, metadata, filtering, and content-management requirements need to be confirmed.
+5. User Accounts, Roles and Permissions
+The platform will support registration and login, with three account types and role-based access control.
+Role	Expected permissions
+Default User	Can access available learning content, view courses and videos/documents, complete tests, and track personal learning progress.
+Academy Account	Has the standard learning permissions and can manage platform content: add, edit, and delete videos and text/document files; create, edit, and delete test questions and answers. Exact scope for managing users and publishing content must be confirmed.
+FIE Account	Has standard learning access. In addition, can access an administrative activity/audit area showing actions performed by Academy accounts, including what was changed and when. Whether FIE users can export logs or inspect before/after values must be confirmed.
+
+5.1 Authentication and account lifecycle
+•	User registration and login.
+•	Logout and secure session handling.
+•	Password reset / forgotten password flow.
+•	Email verification, if required.
+•	Account activation, suspension, or deletion rules.
+•	Role assignment and role changes by an authorized administrator.
+•	Consider whether FIE and Academy accounts are created by an administrator rather than through public self-registration.
+5.2 Content management for Academy accounts
+•	Upload and manage video content or video links.
+•	Upload, replace, categorize, and remove PDF and other approved document types.
+•	Create and edit text-based learning materials.
+•	Create and manage test questions, answer options, correct answers, and explanations.
+•	Associate content with the relevant subject area, level, course, rule, or weapon category.
+•	Preview content before publishing, if required.
+•	Maintain a record of content changes for audit purposes.
+5.3 FIE activity / audit area
+The FIE account may include a dedicated dashboard that records actions carried out by Academy accounts. Potential log fields include:
+•	Actor: the Academy user who performed the action.
+•	Action type: create, update, delete, publish, unpublish, upload, or other relevant event.
+•	Affected item: the video, document, course, question, or other record.
+•	Timestamp: date and time of the action.
+•	Change details: optionally, the previous and updated values.
+•	Filters: date range, user, action type, and content type.
+•	Export: whether FIE users need to download logs (for example, CSV or PDF).
+6. Suggested Core Data Entities
+The following is an initial conceptual data model, not a final database schema:
+Entity	Purpose
+User	Account details, authentication identity, and account status.
+Role / Permission	Defines account roles and the actions each role is allowed to perform.
+Subject Area	One of the five main areas on the home page, such as Refereeing.
+Learning Level	Beginner, Intermediate, Advanced, and High-Level Performance.
+Course Module	A learning unit belonging to a subject area and level.
+Learning Resource	Text, PDF, video, or external resource attached to a course or reference section.
+Rule / Rule Category	Rule information, category, interpretation, and related resources.
+Video	Video metadata, hosting reference, category, weapon, and relationships to rules/courses.
+Question / Answer Option	Question bank, answer choices, correct answer, and explanation.
+Test / Assessment	Assessment configuration and relationship to a level or course.
+Test Attempt	User, attempt date, answers, score, pass/fail status, and completion data.
+User Progress	Completion state for levels and course modules.
+Audit Log	Who performed an action, what changed, and when.
+
+7. Initial Non-Functional Requirements
+•	Responsive interface: support desktop, tablet, and mobile layouts.
+•	Security: enforce authorization on the server for all protected actions; hiding UI controls alone is not sufficient.
+•	Data integrity: prevent unauthorized changes to tests, scores, progress, and published content.
+•	Auditability: important administrative actions should be recorded reliably.
+•	File handling: validate file types and sizes, restrict access where necessary, and use secure storage.
+•	Performance: pages with large video/document collections should support pagination or filtering.
+•	Accessibility: aim for keyboard navigation, readable contrast, captions/transcripts where available, and accessible forms.
+•	Maintainability: use a consistent component system, typed data models, validation, and documented APIs.
+•	Backups and recovery: define database and uploaded-file backup/retention requirements.
+8. Recommended Technology Stack
+For the current scope, a TypeScript-based Next.js application with a relational database is a strong starting point. It can support the public-facing learning experience, authenticated areas, server-side business logic, and administration without requiring a separate backend service at the beginning.
+Layer	Recommendation	Reason
+Application framework	Next.js (App Router) + React + TypeScript	One application for UI, routing, server components, and server-side endpoints/actions.
+Database	PostgreSQL	Reliable relational model for users, roles, courses, tests, progress, and audit logs.
+ORM / migrations	Prisma ORM	Typed database access and manageable schema migrations.
+Authentication	Auth.js or a managed identity provider	Secure login/session foundation; select after deciding account provisioning and SSO requirements.
+Authorization	Role-based access control (RBAC)	Centralized permission checks for Default, Academy, and FIE accounts.
+UI and styling	Tailwind CSS + shadcn/ui	Fast, consistent interface development with reusable components.
+Forms and validation	React Hook Form + Zod	Typed form handling and shared validation rules.
+File storage	S3-compatible object storage	Store PDFs, images, and other uploaded files separately from the application server.
+Video hosting	Dedicated video platform / streaming provider	Avoid treating large video files as ordinary application uploads; confirm privacy, streaming, and access requirements.
+Testing	Vitest + React Testing Library; Playwright for end-to-end tests	Cover business logic, UI behaviour, and key user journeys.
+Deployment	Vercel or a suitable cloud/container platform	Choose based on hosting constraints, data residency, file storage, and operational requirements.
+
+Important: the stack is a proposal, not a fixed decision. Authentication, video hosting, and deployment should be selected after confirming whether the platform needs FIE single sign-on, strict hosting/data-residency requirements, private video streaming, or integration with existing systems.
+9. Suggested Application Structure
+A modular monolith is likely sufficient for the first version: one Next.js codebase with clearly separated feature areas.
+•	Authentication & user management
+•	Role and permission management
+•	Subject areas and course catalogue
+•	Learning content and resource management
+•	Assessments, question bank, and test attempts
+•	Learning progress and completion tracking
+•	Rules, interpretations, and document library
+•	Video library
+•	Academy content administration
+•	FIE audit dashboard
+This structure keeps the initial implementation manageable while allowing individual modules to evolve as requirements grow. A separate backend or microservices architecture is not recommended unless scale, integrations, or organizational constraints justify it.
+10. Key Questions for the Discovery Meeting
+The following questions are intended to clarify scope, user journeys, content ownership, and technical constraints before development begins.
+Product scope and navigation
+•	What are the names and purposes of all five main subject areas on the home page?
+•	Is Refereeing the only area with the structure described here, or should all five areas follow the same pattern?
+•	What is the final Refereeing navigation: Courses, FIE Rules, Rules & Interpretation, Rules, and Video Library? Are any of these intended to be combined?
+•	Are there existing websites, platforms, or design references that should guide the user experience?
+•	Which features are required for the first release, and which can be delivered later?
+Courses and learning progression
+•	Are the four levels strictly sequential, or can an administrator unlock a level manually?
+•	Must users complete both modules in a level before taking its test?
+•	What is the passing score for each 10-question test?
+•	Can users retry failed tests? Is there a retry limit or waiting period?
+•	Are questions selected randomly from a larger question bank?
+•	What question formats are needed (single choice, multiple choice, true/false, image/video-based)?
+•	Should users see explanations or the correct answers after submitting a test?
+•	Should the system store every attempt, score, and answer, or only the latest/best result?
+•	Are certificates, badges, or downloadable proof of completion required?
+•	Should course content support multiple languages?
+Documents, rules and videos
+•	Who provides the official PDFs, rule text, interpretation material, and videos?
+•	Are the PDFs public to all logged-in users, or are some resources restricted by role or course progress?
+•	Should PDFs open in an embedded viewer, download directly, or offer both options?
+•	Are rule interpretations linked to specific rule numbers/sections?
+•	Should each interpretation video have a title, description, language, transcript, tags, or related rule reference?
+•	Will videos be uploaded to this platform, embedded from an existing provider, or delivered through a dedicated streaming service?
+•	Are subtitles/captions required? Are there copyright or geographic restrictions on the video content?
+•	What filters are needed in the Video Library (weapon, topic, rule, level, language, date)?
+Accounts, roles and permissions
+•	Can anyone register a Default account, or must accounts be invited/approved?
+•	Who creates Academy and FIE accounts, and who can change a user's role?
+•	Can one user have more than one role?
+•	Can Academy users manage all content, or should permissions be split (for example, editor vs administrator)?
+•	Can Academy users publish immediately, or should content require approval?
+•	What exactly does 'normal access' mean for an FIE account: the same learning access as a Default user, or additional access to restricted content?
+•	Should FIE accounts be able to view only audit logs, or also inspect content and user progress?
+•	Is FIE single sign-on (SSO) or integration with an existing identity provider required?
+Audit logs and administration
+•	Which actions must be logged: uploads, edits, deletions, publishing, question changes, role changes, and user management?
+•	Should logs show before-and-after values, or only the action and affected item?
+•	How long must audit logs be retained?
+•	Can FIE users filter and export logs?
+•	Should deletion be permanent, or should content be archived/soft-deleted so it can be recovered?
+•	Should administrators be able to preview changes before publishing?
+Technical, operational and delivery
+•	Is there an existing domain, hosting environment, database, or IT/security policy we must use?
+•	Are there requirements for hosting location, GDPR, data retention, or data residency?
+•	What is the expected number of users, concurrent users, videos, and uploaded documents?
+•	Are there existing systems that the platform must integrate with?
+•	Who will own content updates and technical maintenance after launch?
+•	Who supplies the branding, logo, visual guidelines, and final UI/UX designs?
+•	What is the target launch date and what is the expected budget/resource availability?
+•	Who is the product owner and who has final approval on requirements and design?
+11. Recommended Priorities for the Meeting
+If meeting time is limited, prioritize decisions that materially affect architecture and scope:
+8.	Confirm the exact navigation and the five main subject areas.
+9.	Agree on the learning flow, passing score, retries, and test-question behaviour.
+10.	Clarify what each of the three account types can see and do.
+11.	Define the expected FIE audit dashboard and the events it must record.
+12.	Decide how PDFs and videos will be hosted, accessed, and maintained.
+13.	Confirm language requirements, integrations, hosting/security constraints, and the first-release scope.
+12. Proposed Next Steps
+14.	Validate this document with the product stakeholders and record decisions against the open questions.
+15.	Create a sitemap and user-flow diagrams for Default, Academy, and FIE users.
+16.	Prepare low-fidelity wireframes for the home page, Refereeing landing page, course level, test, content detail, Academy administration, and FIE audit dashboard.
+17.	Finalize the data model and permission matrix.
+18.	Define the MVP scope and prioritize features into release phases.
+19.	Set up the repository, development environment, database, authentication, and core UI foundations.
+Appendix A – Items Not Yet Confirmed
+•	Names and content of the four subject areas other than Refereeing.
+•	Whether 'Rule Videos', 'Rules & Interpretation', and 'Video Library' are separate sections or overlapping concepts.
+•	Exact course content and learning materials for each level.
+•	Passing score, retake policy, question formats, and completion rules.
+•	Public registration vs invitation/approval; account provisioning and role assignment.
+•	Precise FIE permissions and audit-log detail/retention/export requirements.
+•	Video hosting, document storage, language support, and accessibility requirements.
+•	Hosting, integrations, security policies, GDPR/data retention, expected scale, budget, and timeline.
+
+ 13. Confirmed Decisions and Additional Requirements
+The following points were clarified after the initial draft and should be treated as the current working requirements.
+13.1 Content ownership and approval
+•	The Academy/client team will provide the course content and learning materials.
+•	The Academy/client team will provide and upload the videos.
+•	Prepared test questions will be supplied by the client.
+•	The client is expected to manage and maintain content through the administration panel; routine content entry should not depend on the development team.
+•	A demo/prototype will be presented for review and approval before full platform development proceeds.
+13.2 Assessment rules
+•	Each test contains 10 questions selected at random from a larger question bank. Approximately 130 questions were mentioned as an example; the final number and distribution by level must be confirmed.
+•	The required passing score is 80% (8 correct answers out of 10, assuming equal weighting).
+•	If a user fails a test, their progress is reset and they must study the relevant course material again before attempting the test again. The exact scope of the reset (current level or entire learning path) remains to be confirmed.
+•	Only successful test attempts are intended to be retained in the user-facing attempt history. Whether failed attempts must remain in restricted internal logs for security or analytics should be confirmed.
+13.3 Design and visual identity
+•	There is currently no existing Figma design, brand guideline, logo, or established colour palette.
+•	The project designer/developer will be responsible for creating the visual design and logo.
+•	No reference platform has been identified; the visual direction and user experience should be proposed during the design phase.
+13.4 Languages and internationalization
+•	The platform must support English, French, and Spanish.
+•	The language requirement should cover the full user interface, navigation, forms, validation messages, notifications, and system-generated content.
+•	The client must confirm whether course materials, PDFs, test questions, answer explanations, and video subtitles/captions will also be supplied in all three languages.
+•	The application should be designed for internationalization (i18n) from the beginning, including language selection and persistent language preference.
+13.5 Implementation implications
+•	The question bank must support random selection of 10 questions per attempt and must not duplicate a question within the same test.
+•	The system should distinguish learning progress from successful test completion records.
+•	Multilingual content needs a clear translation model so courses, questions, answers, rules, and resources can have language-specific versions.
+•	The demo should validate navigation, visual direction, course progression, quiz behaviour, and the Academy administration workflow before the full build.
+
