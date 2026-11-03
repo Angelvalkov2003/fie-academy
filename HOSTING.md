@@ -1,8 +1,22 @@
 # FIE Academy — хостинг, архитектура и сметки
 
-Версия 0.1 · 3 ноември 2026 · допълнение към [PLAN.md](PLAN.md). Диаграмите са в `FIE_Academy_Hosting.pptx`.
+Версия 0.2 · 3 ноември 2026 · допълнение към [PLAN.md](PLAN.md). Презентациите не са в репото.
 
-> **Актуализация (клиентска презентация `FIE_Academy_Hosting_Options.pptx`, EN):** финалните три варианта са **Vercel + Supabase** (≈ €49), **Koyeb** (Франция, част от Mistral AI от февруари 2026, официален MCP сървър; ≈ €66 с Koyeb Postgres) и **OVHcloud + Coolify** (≈ €39: VPS-4 за приложението 8 vCPU / 24 GB ≈ €20, отделен VPS-2 за базата 4 vCPU / 8 GB ≈ €7 + бекъп и Object Storage ≈ €4; оразмерено за 1000 души в един ден, защото видеата и PDF-ите не минават през сървъра. Цените на OVH VPS са от обобщение на страницата en-ie и трябва да се потвърдят при поръчка). Видеото е на Bunny Stream и в трите.
+> ## ✅ Избрано (3 ноември 2026): OVHcloud + Bunny Stream, домейн `fieacademy.org`
+>
+> | Компонент | Доставчик | ≈ €/месец |
+> |---|---|---|
+> | Приложение (Next.js + Coolify) | OVHcloud VPS-4, 8 vCPU / 24 GB | 20 |
+> | База (PostgreSQL) | OVHcloud VPS-2, 4 vCPU / 8 GB, отделен сървър | 7 |
+> | PDF-и + бекъпи | OVHcloud Object Storage | 4 |
+> | Видеа | Bunny Stream (EU storage, token URL, TUS качване) | 8 |
+> | Имейли | Brevo (безплатен план до 300/ден) | 0 |
+> | Плащания (по-късно) | Mollie или Stripe, такса на транзакция | — |
+> | **Общо** | | **≈ 39 + 8 = €47** |
+>
+> Всичко се настройва от код/API: OVHcloud (официален MCP сървър, CLI, Terraform), Bunny (REST API), Coolify (API). DNS на `fieacademy.org`: A запис към VPS-4, SPF/DKIM/DMARC за Brevo, по желание `video.fieacademy.org` → Bunny CDN. Цените на OVH VPS трябва да се потвърдят при поръчка. Вариантите по-долу са историята на избора.
+
+> **Предишна актуализация (клиентска презентация, EN):** финалните три варианта са **Vercel + Supabase** (≈ €49), **Koyeb** (Франция, част от Mistral AI от февруари 2026, официален MCP сървър; ≈ €66 с Koyeb Postgres) и **OVHcloud + Coolify** (≈ €39: VPS-4 за приложението 8 vCPU / 24 GB ≈ €20, отделен VPS-2 за базата 4 vCPU / 8 GB ≈ €7 + бекъп и Object Storage ≈ €4; оразмерено за 1000 души в един ден, защото видеата и PDF-ите не минават през сървъра. Цените на OVH VPS са от обобщение на страницата en-ie и трябва да се потвърдят при поръчка). Видеото е на Bunny Stream и в трите.
 >
 > Цените са проверени в официалните ценоразписи на 3 ноември 2026: Vercel Pro $20; Supabase Pro $25; Koyeb Pro $29 (вкл. $10 compute) и Postgres Small $29,76 (само Frankfurt); OVHcloud VPS-2 (4 vCPU / 8 GB) от $8,50, с неограничен трафик и безплатен дневен бекъп, Object Storage без такси за изходящ трафик; Bunny Stream: безплатно енкодиране, съхранение от $0,01/GB, доставка от $0,005/GB.
 >

@@ -245,6 +245,7 @@ The following points were clarified after the initial draft and should be treate
 •	The client is expected to manage and maintain content through the administration panel; routine content entry should not depend on the development team.
 •	A demo/prototype will be presented for review and approval before full platform development proceeds.
 13.2 Assessment rules
+(Superseded by section 14.4, 3 November 2026: tests now have 15 questions, a Zoom meeting code and 3 attempts before a reset. Kept here for history.)
 •	Each test contains 10 questions selected at random from a larger question bank. Approximately 130 questions were mentioned as an example; the final number and distribution by level must be confirmed.
 •	The required passing score is 80% (8 correct answers out of 10, assuming equal weighting).
 •	If a user fails a test, their progress is reset and they must study the relevant course material again before attempting the test again. The exact scope of the reset (current level or entire learning path) remains to be confirmed.
@@ -263,4 +264,90 @@ The following points were clarified after the initial draft and should be treate
 •	The system should distinguish learning progress from successful test completion records.
 •	Multilingual content needs a clear translation model so courses, questions, answers, rules, and resources can have language-specific versions.
 •	The demo should validate navigation, visual direction, course progression, quiz behaviour, and the Academy administration workflow before the full build.
+
+ 14. Final Decisions – 3 November 2026
+The following decisions were agreed with AVOEX on 3 November 2026. Where they conflict with earlier sections (including 3, 5 and 13.2), this section takes precedence.
+
+14.1 Roles and permissions
+Roles are assigned directly in the database (there is no role-management screen). New registrations are always User.
+Role	Permissions
+User	Free registration with email and password, email verification, forgotten-password reset and password change. Chooses a weapon, studies the content, joins the online meetings, takes tests and sees their own progress. Must pay to access the paid levels (see 14.7).
+Admin (FIE account)	Read-only. Sees the full history (audit log) of every change made by every Super Admin: who, what, when, with before/after values. Sees every user: email, registration date, payment status and progress per weapon and level (content completed, meeting code entered, test attempts and results). Sees all content, including deleted items.
+Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and deactivates test questions (no hard delete, so history is kept); assigns questions to tests by category and level; uploads, replaces and deletes videos and PDF files for each section; creates and manages online meetings and their codes. Every action is recorded in the audit log.
+
+14.2 Refereeing: weapon selection and independent progress
+•	When a user enters Refereeing, they first choose a weapon: Sabre, Épée or Foil. They can switch weapon at any time.
+•	Each weapon is a separate learning path with its own progress. Example: a user can be at Beginner in Sabre and at Intermediate in Épée at the same time.
+•	Each weapon has the four sequential levels: Beginner, Intermediate, Advanced, High-Level Performance.
+•	A "section" in this document means one level of one weapon (for example Sabre – Beginner). There are 12 sections in Refereeing.
+•	Each section has its own learning content (text, PDFs, videos), managed by the Super Admin.
+•	The reference areas (FIE Rules, Rules & Interpretation, Rules, Video Library) stay as described in sections 2.1 and 4. They do not affect progress.
+
+14.3 Question bank
+•	Every question belongs to one of four categories: Sabre, Épée, Foil or General.
+•	Every question has a difficulty that matches one of the four levels: Beginner, Intermediate, Advanced or High-Level Performance.
+•	Format: text only, single choice, three options (A/B/C), exactly one correct answer.
+•	Every question is stored in English, French and Spanish.
+•	The initial bank is imported from a spreadsheet supplied by the client. After that, the Super Admin can add, edit and deactivate questions in the admin panel. Deactivated questions are no longer drawn in new tests but remain in the database and in the audit log.
+•	Minimum pool per level: 10 active questions for each weapon and 5 active General questions. A much larger pool is expected (around 130 questions per section was mentioned).
+
+14.4 Test rules
+•	Each test has 15 questions drawn at random when the test starts:
+	o	10 questions from the user's weapon category at the section's level;
+	o	5 questions from the General category at the same level.
+•	No question appears twice in one test. The order of questions and of the A/B/C options may be shuffled.
+•	Pass mark: 12 correct answers out of 15 (80%).
+•	After submitting, the user sees only the score and pass/fail. Correct answers and which questions were wrong are not shown.
+•	Scoring is done only on the server.
+•	The test is unlocked only when both conditions are met:
+	1.	The user has completed all the content of the section (scrolled through all text and watched all videos).
+	2.	The user has entered a valid code from an online meeting for that weapon and level (see 14.5).
+•	Once unlocked, the user has 3 attempts.
+•	Pass: the section is completed and the next level of that weapon becomes available (subject to payment, see 14.7).
+•	3 failed attempts: the user's progress in that section is reset. The completed content, the entered meeting code and the attempt counter are cleared. The user must go through all the content again and attend a new meeting to get a new code, and then gets 3 new attempts.
+•	Every attempt is stored (questions drawn, answers, score, date). The Admin can see all attempts; the user sees their own results.
+
+14.5 Online meetings (Zoom) and test codes
+•	For each weapon and level, the Super Admin can add online meetings with: name, date, time, host name, description and the Zoom link.
+•	When a meeting is created, the platform automatically generates a unique 6-digit code for it.
+•	Users see the upcoming meetings for their weapon and level inside the section.
+•	At the end of the meeting, the host reads out the code to the participants.
+•	Before starting the test, the user must enter this code. The platform accepts it only if it belongs to a meeting for that same weapon and level.
+•	When entering the code, the user sees a warning: meetings are recorded, and besides the code the host will check the recordings to confirm that the user attended the meeting.
+•	The platform records which meeting code each user entered and when, so the Admin and the host can cross-check attendance.
+•	Meetings are created in Zoom by the client; the platform stores the link. Automatic Zoom integration (API) is not part of the first release.
+
+14.6 Content management
+•	The Super Admin uploads videos and PDFs per section (weapon and level) and for the reference areas.
+•	Videos are uploaded directly from the browser to Bunny Stream; PDFs are uploaded directly to OVHcloud Object Storage. Files do not pass through the application server.
+•	Deleting content is a soft delete: the item disappears for users but stays visible to Admin and Super Admin, with who deleted it and when.
+•	Every upload, replacement, deletion, question change and meeting change is written to the audit log.
+
+14.7 Payments (direction agreed, details not final)
+•	Access to Refereeing requires an account and payment.
+•	Expected model: payment per weapon and per level. To move from one level to the next, the user must both pass the test and have paid for the next level.
+•	Payments will be built into the platform with card payments.
+•	Recommended providers (EU): Mollie (Netherlands) or Stripe (EU entity in Ireland). Both support cards, Apple Pay / Google Pay and SEPA, and produce the data needed for EU VAT invoices.
+•	The platform only records the payment result from the provider (paid level, amount, date, provider reference). Card data never touches our servers.
+•	The Admin sees each user's payment status.
+
+14.8 Hosting, video and domain
+•	Domain: fieacademy.org.
+•	Application, database, PDF storage and backups: OVHcloud (France, EU data centres).
+	o	Application server: VPS-4 (8 vCPU, 24 GB RAM) with Coolify, sized for about 1,000 users in one day.
+	o	Database server: separate VPS-2 (4 vCPU, 8 GB RAM) with PostgreSQL and daily backups.
+	o	PDFs and database backups: OVHcloud Object Storage (no egress fees).
+	o	Estimated cost: about €39 per month.
+•	Videos: Bunny Stream (Slovenia), with EU storage. Provides encoding, the player, CDN delivery, token-protected playback and an API, so it can be set up and managed by the development team (including with AI tools). Estimated cost: about €8 per month.
+•	Transactional email (verification, password reset, meeting reminders): Brevo (France).
+•	All providers are European. Total estimated cost: about €47 per month, within the €100 budget.
+•	The hosting presentations have been removed from the repository; this document, PLAN.md and HOSTING.md are the reference.
+
+14.9 Open questions
+•	Payments: prices per level, whether Beginner is free, currency, VAT invoices, refunds and the final provider.
+•	Meeting codes: how long a code stays valid after the meeting, and whether a code from an older meeting of the same weapon and level is accepted.
+•	Attendance: should the host or Admin be able to cancel a user's result in the platform if the recordings show they did not attend? (Admin is read-only today.)
+•	Content: are any parts of the content shared between the three weapons at the same level, or is everything weapon-specific?
+•	Videos: do the videos contain speech (requiring three language versions) or are subtitles enough?
+•	Launch date.
 

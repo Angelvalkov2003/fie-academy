@@ -1,0 +1,4 @@
+﻿# Office files (client decks are kept locally, not in the repo)
+*.pptx
+~$*
+
