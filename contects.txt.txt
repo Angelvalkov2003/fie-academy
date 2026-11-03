@@ -271,17 +271,19 @@ The following decisions were agreed with AVOEX on 3 November 2026. Where they co
 14.1 Roles and permissions
 Roles are assigned directly in the database (there is no role-management screen). New registrations are always User.
 Role	Permissions
-User	Free registration with email and password, email verification, forgotten-password reset and password change. Chooses a weapon, studies the content, joins the online meetings, takes tests and sees their own progress. Must pay to access the paid levels (see 14.7).
+User	Free registration with email and password, email verification, forgotten-password reset and password change. Chooses a weapon, studies the content, joins the online meetings, takes tests and sees their own progress. Pays for every level, including Beginner (see 14.7).
 Admin (FIE account)	Read-only. Sees the full history (audit log) of every change made by every Super Admin: who, what, when, with before/after values. Sees every user: email, registration date, payment status and progress per weapon and level (content completed, meeting code entered, test attempts and results). Sees all content, including deleted items.
-Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and deactivates test questions (no hard delete, so history is kept); assigns questions to tests by category and level; uploads, replaces and deletes videos and PDF files for each section; creates and manages online meetings and their codes. Every action is recorded in the audit log.
+Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and deactivates test questions (no hard delete, so history is kept); assigns questions to tests by category and level; uploads, replaces and deletes videos and PDF files for each section; creates and manages online meetings and their codes; can annul a user's meeting attendance (see 14.5). Every action is recorded in the audit log.
 
 14.2 Refereeing: weapon selection and independent progress
 •	When a user enters Refereeing, they first choose a weapon: Sabre, Épée or Foil. They can switch weapon at any time.
 •	Each weapon is a separate learning path with its own progress. Example: a user can be at Beginner in Sabre and at Intermediate in Épée at the same time.
 •	Each weapon has the four sequential levels: Beginner, Intermediate, Advanced, High-Level Performance.
 •	A "section" in this document means one level of one weapon (for example Sabre – Beginner). There are 12 sections in Refereeing.
-•	Each section has its own learning content (text, PDFs, videos), managed by the Super Admin.
+•	Each section has its own learning content (text, PDFs, videos), managed by the Super Admin. No learning content is shared between weapons; the only shared material is the General question category (see 14.3).
 •	The reference areas (FIE Rules, Rules & Interpretation, Rules, Video Library) stay as described in sections 2.1 and 4. They do not affect progress.
+•	PDF files are public: anyone can open or download them at any time, without payment. Opening a PDF is not tracked and is not required to unlock a test.
+•	Videos have no speech. One video file serves all three languages; only the title and description are translated. No subtitles or separate language versions are needed.
 
 14.3 Question bank
 •	Every question belongs to one of four categories: Sabre, Épée, Foil or General.
@@ -300,10 +302,10 @@ Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and
 •	After submitting, the user sees only the score and pass/fail. Correct answers and which questions were wrong are not shown.
 •	Scoring is done only on the server.
 •	The test is unlocked only when both conditions are met:
-	1.	The user has completed all the content of the section (scrolled through all text and watched all videos).
+	1.	The user has completed all the content of the section (scrolled through all text and watched all videos; PDFs are not counted).
 	2.	The user has entered a valid code from an online meeting for that weapon and level (see 14.5).
 •	Once unlocked, the user has 3 attempts.
-•	Pass: the section is completed and the next level of that weapon becomes available (subject to payment, see 14.7).
+•	Pass: the section is marked as completed. The user does not have to buy the next level straight away; the pass is simply recorded and they can buy the next level whenever they want (see 14.7).
 •	3 failed attempts: the user's progress in that section is reset. The completed content, the entered meeting code and the attempt counter are cleared. The user must go through all the content again and attend a new meeting to get a new code, and then gets 3 new attempts.
 •	Every attempt is stored (questions drawn, answers, score, date). The Admin can see all attempts; the user sees their own results.
 
@@ -312,9 +314,10 @@ Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and
 •	When a meeting is created, the platform automatically generates a unique 6-digit code for it.
 •	Users see the upcoming meetings for their weapon and level inside the section.
 •	At the end of the meeting, the host reads out the code to the participants.
-•	Before starting the test, the user must enter this code. The platform accepts it only if it belongs to a meeting for that same weapon and level.
+•	Before starting the test, the user must enter this code. The platform accepts it only if it belongs to a meeting for that same weapon and level, and only from the start of the meeting until 24 hours after it. After that the code expires and the user must attend another meeting.
 •	When entering the code, the user sees a warning: meetings are recorded, and besides the code the host will check the recordings to confirm that the user attended the meeting.
 •	The platform records which meeting code each user entered and when, so the Admin and the host can cross-check attendance.
+•	If the recording shows that a user did not attend, the Super Admin can annul that user's meeting attendance. The entered code is then invalid: the test locks again until the user attends another meeting and enters its code. If the user had already passed the test with that code, the pass is cancelled as well (the payment for the level is kept). The annulment is recorded in the audit log and shown to the Admin.
 •	Meetings are created in Zoom by the client; the platform stores the link. Automatic Zoom integration (API) is not part of the first release.
 
 14.6 Content management
@@ -323,12 +326,15 @@ Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and
 •	Deleting content is a soft delete: the item disappears for users but stays visible to Admin and Super Admin, with who deleted it and when.
 •	Every upload, replacement, deletion, question change and meeting change is written to the audit log.
 
-14.7 Payments (direction agreed, details not final)
-•	Access to Refereeing requires an account and payment.
-•	Expected model: payment per weapon and per level. To move from one level to the next, the user must both pass the test and have paid for the next level.
-•	Payments will be built into the platform with card payments.
-•	Recommended providers (EU): Mollie (Netherlands) or Stripe (EU entity in Ireland). Both support cards, Apple Pay / Google Pay and SEPA, and produce the data needed for EU VAT invoices.
-•	The platform only records the payment result from the provider (paid level, amount, date, provider reference). Card data never touches our servers.
+14.7 Payments
+•	Payment provider: Stripe (Stripe Checkout, built into the platform, card payments).
+•	Creating an account is free.
+•	Every level is paid separately per weapon, including Beginner.
+•	Anyone with an account can buy Beginner for any weapon.
+•	A higher level (Intermediate, Advanced, High-Level Performance) can be bought only after the user has passed the test of the previous level of the same weapon. Example: to buy Sabre – Intermediate, the user must first pass Sabre – Beginner.
+•	Passing a test does not force a purchase: the pass is recorded and the next level shows a "Buy" button until the user pays.
+•	The platform only records the payment result from Stripe (level, amount, date, Stripe reference) via a webhook. Card data never touches our servers.
+•	Still to define: prices, currency, VAT invoices and the refund policy.
 •	The Admin sees each user's payment status.
 
 14.8 Hosting, video and domain
@@ -343,11 +349,12 @@ Super Admin (Academy account)	Has all Admin rights. In addition: adds, edits and
 •	All providers are European. Total estimated cost: about €47 per month, within the €100 budget.
 •	The hosting presentations have been removed from the repository; this document, PLAN.md and HOSTING.md are the reference.
 
-14.9 Open questions
-•	Payments: prices per level, whether Beginner is free, currency, VAT invoices, refunds and the final provider.
-•	Meeting codes: how long a code stays valid after the meeting, and whether a code from an older meeting of the same weapon and level is accepted.
-•	Attendance: should the host or Admin be able to cancel a user's result in the platform if the recordings show they did not attend? (Admin is read-only today.)
-•	Content: are any parts of the content shared between the three weapons at the same level, or is everything weapon-specific?
-•	Videos: do the videos contain speech (requiring three language versions) or are subtitles enough?
-•	Launch date.
+14.9 Timeline
+•	Demo: by the end of the first week of December 2026.
+•	Finished platform: by the end of January 2027.
+•	There is no fixed public launch date yet.
+
+14.10 Open questions
+•	Payments: prices per level, currency, VAT invoices and refund policy.
+•	The names and content of the other four subject areas (later phase).
 

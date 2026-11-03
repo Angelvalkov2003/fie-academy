@@ -11,7 +11,7 @@
 > | PDF-и + бекъпи | OVHcloud Object Storage | 4 |
 > | Видеа | Bunny Stream (EU storage, token URL, TUS качване) | 8 |
 > | Имейли | Brevo (безплатен план до 300/ден) | 0 |
-> | Плащания (по-късно) | Mollie или Stripe, такса на транзакция | — |
+> | Плащания | Stripe Checkout, такса на транзакция | — |
 > | **Общо** | | **≈ 39 + 8 = €47** |
 >
 > Всичко се настройва от код/API: OVHcloud (официален MCP сървър, CLI, Terraform), Bunny (REST API), Coolify (API). DNS на `fieacademy.org`: A запис към VPS-4, SPF/DKIM/DMARC за Brevo, по желание `video.fieacademy.org` → Bunny CDN. Цените на OVH VPS трябва да се потвърдят при поръчка. Вариантите по-долу са историята на избора.
