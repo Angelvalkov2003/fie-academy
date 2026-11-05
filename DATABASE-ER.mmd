@@ -1,0 +1,452 @@
+erDiagram
+    %% ───────── Users / Better Auth ─────────
+    user {
+        string id PK
+        string email UK
+        bool emailVerified
+        string name
+        string image
+        enum role "USER | ADMIN | SUPER_ADMIN"
+        enum locale "en | fr | es"
+        int creditBalance ">= 0"
+        enum preferredWeapon "SABRE | EPEE | FOIL"
+        bool banned
+        datetime deletedAt
+        datetime createdAt
+        datetime updatedAt
+    }
+    session {
+        string id PK
+        string userId FK
+        string token UK
+        datetime expiresAt
+        string ipAddress
+        string userAgent
+        datetime createdAt
+        datetime updatedAt
+    }
+    account {
+        string id PK
+        string userId FK
+        string providerId
+        string accountId
+        string password "scrypt hash"
+        datetime createdAt
+        datetime updatedAt
+    }
+    verification {
+        string id PK
+        string identifier
+        string value
+        datetime expiresAt
+        datetime createdAt
+    }
+    rate_limit {
+        string id PK
+        string key UK
+        int count
+        bigint lastRequest
+    }
+
+    %% ───────── Structure ─────────
+    subject_area {
+        string id PK
+        string slug UK
+        int order
+        bool isActive
+    }
+    subject_area_translation {
+        string subjectAreaId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    course {
+        string id PK
+        string subjectAreaId FK
+        enum weapon "SABRE | EPEE | FOIL"
+        enum level "BEGINNER .. HIGH_PERFORMANCE"
+        int priceCredits
+        bool isActive
+        datetime createdAt
+        datetime updatedAt
+    }
+    course_translation {
+        string courseId PK,FK
+        enum locale PK
+        string title
+        string summary
+    }
+    module {
+        string id PK
+        string courseId FK
+        int order "1 | 2"
+        string slug
+        datetime createdAt
+    }
+    module_translation {
+        string moduleId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    lesson {
+        string id PK
+        string moduleId FK
+        int order
+        string slug
+        string viewPath "hardcoded React view"
+        bool isRequired
+        bool isActive
+        datetime createdAt
+    }
+
+    %% ───────── Video ─────────
+    video {
+        string id PK
+        string subjectAreaId FK
+        enum weapon "nullable"
+        string bunnyVideoId UK
+        string bunnyLibraryId
+        int durationSec
+        string thumbnailUrl
+        enum status "UPLOADING | PROCESSING | READY | FAILED"
+        bigint sizeBytes
+        string uploadedById FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        string deletedById FK
+    }
+    video_translation {
+        string videoId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    video_folder {
+        string id PK
+        string subjectAreaId FK
+        enum kind "MODULE | LIBRARY"
+        string moduleId FK,UK "when MODULE"
+        enum weapon "when LIBRARY"
+        int order
+        bool isRequired
+        datetime createdAt
+        datetime deletedAt
+    }
+    video_folder_translation {
+        string folderId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    video_folder_item {
+        string folderId PK,FK
+        string videoId PK,FK
+        int order
+        string addedById FK
+        datetime addedAt
+    }
+
+    %% ───────── Documents & Rules ─────────
+    document {
+        string id PK
+        string subjectAreaId FK
+        enum category "FIE_RULES | TECHNICAL | ADMINISTRATIVE | ORGANIZATION | OTHER"
+        int order
+        datetime publishedAt
+        string uploadedById FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        string deletedById FK
+    }
+    document_translation {
+        string documentId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    document_file {
+        string id PK
+        string documentId FK
+        enum locale
+        string storageKey
+        bigint sizeBytes
+        int pageCount
+        string sha256
+        string uploadedById FK
+        datetime createdAt
+        datetime replacedAt "null = current"
+    }
+    rule {
+        string id PK
+        string subjectAreaId FK
+        enum category "TECHNICAL | ADMINISTRATIVE | ORGANIZATION"
+        string ruleNumber "e.g. t.42"
+        enum weapon "nullable"
+        int order
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+    }
+    rule_translation {
+        string ruleId PK,FK
+        enum locale PK
+        string title
+        string text
+        string interpretation
+    }
+    rule_video {
+        string ruleId PK,FK
+        string videoId PK,FK
+        int order
+    }
+
+    %% ───────── Questions ─────────
+    question {
+        string id PK
+        string subjectAreaId FK
+        enum category "SABRE | EPEE | FOIL | GENERAL"
+        enum level
+        enum correct "A | B | C"
+        bool active
+        string externalRef UK
+        string createdById FK
+        string updatedById FK
+        datetime createdAt
+        datetime updatedAt
+    }
+    question_translation {
+        string questionId PK,FK
+        enum locale PK
+        string text
+        string optionA
+        string optionB
+        string optionC
+        string explanation
+    }
+
+    %% ───────── Progress ─────────
+    section_progress {
+        string id PK
+        string userId FK
+        string courseId FK
+        int cycle
+        datetime startedAt
+        datetime contentCompletedAt
+        string meetingId FK
+        datetime codeEnteredAt
+        int attemptsUsed "0..3"
+        datetime passedAt
+        datetime resetAt "null = current"
+        enum resetReason "THREE_FAILS | ADMIN"
+    }
+    lesson_progress {
+        string id PK
+        string userId FK
+        string lessonId FK
+        int cycle
+        datetime firstOpenedAt
+        datetime lastOpenedAt
+        datetime scrolledToEndAt
+        int timeSpentSec
+        json mediaProgress "embedded videos by mediaKey"
+        datetime completedAt
+    }
+    video_progress {
+        string id PK
+        string userId FK
+        string videoId FK
+        string folderId FK
+        int cycle
+        int maxContinuousSec
+        int durationSec
+        datetime completedAt
+        datetime updatedAt
+    }
+    test_attempt {
+        string id PK
+        string userId FK
+        string courseId FK
+        string sectionProgressId FK
+        int cycle
+        int attemptNumber "1..3"
+        enum status "IN_PROGRESS | SUBMITTED | EXPIRED"
+        enum locale
+        datetime startedAt
+        datetime expiresAt
+        datetime submittedAt
+        int score "0..15"
+        bool passed
+    }
+    test_attempt_answer {
+        string attemptId PK,FK
+        string questionId PK,FK
+        int position "1..15"
+        string optionOrder "e.g. CAB"
+        enum chosen "A | B | C"
+        bool isCorrect
+    }
+    course_completion {
+        string id PK
+        string userId FK
+        string courseId FK
+        string attemptId FK,UK
+        datetime passedAt
+        datetime annulledAt
+        string annulledById FK
+        string annulReason
+    }
+
+    %% ───────── Meetings ─────────
+    meeting {
+        string id PK
+        string courseId FK
+        datetime startsAt
+        datetime endsAt
+        string hostName
+        string zoomUrl
+        char6 code UK "6 digits"
+        datetime codeValidUntil "endsAt + 24h"
+        string createdById FK
+        datetime createdAt
+        datetime updatedAt
+        datetime cancelledAt
+        datetime deletedAt
+    }
+    meeting_translation {
+        string meetingId PK,FK
+        enum locale PK
+        string title
+        string description
+    }
+    meeting_code_entry {
+        string id PK
+        string userId FK
+        string meetingId FK
+        string courseId FK
+        string enteredCode
+        enum result "OK | WRONG_CODE | WRONG_SECTION | EXPIRED | RATE_LIMITED"
+        string ip
+        datetime createdAt
+    }
+    meeting_annulment {
+        string id PK
+        string userId FK
+        string meetingId FK
+        string courseId FK
+        string sectionProgressId FK
+        string annulledById FK
+        string reason
+        datetime createdAt
+    }
+
+    %% ───────── Credits & Access ─────────
+    credit_transaction {
+        string id PK
+        string userId FK
+        int amount "+ / -"
+        enum type "ADMIN_GRANT | ADMIN_DEDUCT | SPEND | REFUND | PURCHASE"
+        int balanceAfter ">= 0"
+        string courseAccessId FK
+        string actorId FK "Super Admin"
+        string reason
+        datetime createdAt
+    }
+    course_access {
+        string id PK
+        string userId FK
+        string courseId FK
+        enum source "CREDITS | ADMIN_UNLOCK"
+        int creditsSpent
+        string grantedById FK
+        string reason
+        datetime grantedAt
+        datetime revokedAt "null = active"
+        string revokedById FK
+        string revokeReason
+    }
+
+    %% ───────── Audit ─────────
+    audit_log {
+        bigint id PK
+        string actorId FK
+        string actorEmail "snapshot"
+        enum actorRole
+        string action
+        string entityType
+        string entityId
+        string entityTitle
+        string targetUserId FK
+        json before
+        json after
+        string ip
+        string userAgent
+        datetime createdAt
+    }
+
+    %% ═════════ Relationships ═════════
+    user ||--o{ session : "has"
+    user ||--o{ account : "has"
+
+    subject_area ||--|{ subject_area_translation : "translated"
+    subject_area ||--o{ course : "has"
+    subject_area ||--o{ video : "has"
+    subject_area ||--o{ video_folder : "has"
+    subject_area ||--o{ document : "has"
+    subject_area ||--o{ rule : "has"
+    subject_area ||--o{ question : "has"
+
+    course ||--|{ course_translation : "translated"
+    course ||--|{ module : "has 2"
+    module ||--|{ module_translation : "translated"
+    module ||--|{ lesson : "has"
+    module ||--o| video_folder : "video folder"
+
+    video ||--|{ video_translation : "translated"
+    video_folder ||--|{ video_folder_translation : "translated"
+    video_folder ||--o{ video_folder_item : "contains"
+    video ||--o{ video_folder_item : "in folders"
+
+    document ||--|{ document_translation : "translated"
+    document ||--|{ document_file : "file per locale"
+    rule ||--|{ rule_translation : "translated"
+    rule ||--o{ rule_video : "videos"
+    video ||--o{ rule_video : "for rules"
+
+    question ||--|{ question_translation : "translated"
+
+    user ||--o{ section_progress : "progress"
+    course ||--o{ section_progress : "per user"
+    meeting |o--o{ section_progress : "code entered"
+    user ||--o{ lesson_progress : "reads"
+    lesson ||--o{ lesson_progress : "tracked"
+    user ||--o{ video_progress : "watches"
+    video ||--o{ video_progress : "tracked"
+    video_folder |o--o{ video_progress : "in folder"
+
+    user ||--o{ test_attempt : "takes"
+    course ||--o{ test_attempt : "test of"
+    section_progress ||--o{ test_attempt : "max 3 per cycle"
+    test_attempt ||--|{ test_attempt_answer : "15 answers"
+    question ||--o{ test_attempt_answer : "asked in"
+    test_attempt ||--o| course_completion : "passed"
+    user ||--o{ course_completion : "completes"
+    course ||--o{ course_completion : "completed"
+
+    course ||--o{ meeting : "meetings"
+    meeting ||--|{ meeting_translation : "translated"
+    user ||--o{ meeting_code_entry : "enters code"
+    meeting |o--o{ meeting_code_entry : "entries"
+    user ||--o{ meeting_annulment : "annulled for"
+    meeting ||--o{ meeting_annulment : "annulments"
+    section_progress ||--o{ meeting_annulment : "affects"
+
+    user ||--o{ credit_transaction : "ledger"
+    user ||--o{ course_access : "unlocked"
+    course ||--o{ course_access : "unlocked by"
+    course_access |o--o{ credit_transaction : "paid with"
+
+    user |o--o{ audit_log : "actor"
